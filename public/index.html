@@ -3,24 +3,34 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Random Spot • Generator</title>
+  <title>Random Spot</title>
+
+  <!-- Leaflet (map) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
 </head>
 <body data-page="index">
   <div class="wrap">
     <div class="nav">
-      <div class="brand">🌍 Random Spot <span class="badge">generator</span></div>
+      <div class="brand">Random Spot <span class="badge">certificate</span></div>
       <div class="navlinks">
-        <a href="index.html">Home</a>
         <a href="terms.html">Terms</a>
+        <a href="checkout.html" class="pill">Checkout</a>
       </div>
     </div>
 
-    <h1>Roll a place. Buy the certificate.</h1>
-    <p>You’re buying a <b>novelty location reference</b>. No ownership, no permissions, no guarantees of access.</p>
+    <div class="hero">
+      <h1>Roll a location.</h1>
+      <p class="sub">Novelty certificate. No ownership, no permissions, no guarantees of access.</p>
+    </div>
 
     <div class="grid">
       <div class="card">
-        <h2>Generate</h2>
+        <div class="sectionTitle">Generator</div>
 
         <div class="field">
           <label>Country</label>
@@ -31,53 +41,59 @@
             <option value="GB">United Kingdom</option>
             <option value="JP">Japan</option>
           </select>
-          <small>Simple bounding boxes (v1).</small>
         </div>
 
         <div class="field">
           <label>Mode</label>
           <select id="mode">
-            <option value="publicish">May be public / may be accessible (check local rules)</option>
+            <option value="publicish">Prefer likely-accessible areas (still check rules)</option>
             <option value="anywhere">Anywhere (may be private/restricted)</option>
           </select>
+          <div class="hint">We never promise access. “Publicish” just avoids obvious water / extreme picks.</div>
         </div>
 
         <div class="row">
-          <button class="btn" id="reroll">🎲 Reroll</button>
-          <button class="btn primary" id="lock">Lock in → Checkout</button>
+          <button class="btn" id="reroll">Reroll</button>
+          <button class="btn primary" id="lock">Lock in</button>
         </div>
 
-        <div class="notice" id="status"></div>
+        <div class="status" id="status"></div>
 
-        <div class="notice">
-          <b>Reminder:</b> access varies by location and circumstances. Always check local rules at the time of visit.
+        <div class="mini">
+          <div class="kv">
+            <div class="k">Coords</div><div class="v" id="pCoords">—</div>
+            <div class="k">Seed</div><div class="v" id="pSeed">—</div>
+            <div class="k">Check</div><div class="v" id="pCheck">—</div>
+            <div class="k">Nearby</div><div class="v" id="pPlace">—</div>
+          </div>
+        </div>
+
+        <div class="note">
+          Access varies by local rules, closures, and safety conditions. Always check at the time of visit.
         </div>
       </div>
 
-      <div class="card">
-        <h2>Preview</h2>
-        <div class="kv">
-          <div class="k">Country</div><div class="v" id="pCountry">—</div>
-          <div class="k">Mode</div><div class="v" id="pMode">—</div>
-          <div class="k">Latitude</div><div class="v" id="pLat">—</div>
-          <div class="k">Longitude</div><div class="v" id="pLon">—</div>
-          <div class="k">Seed</div><div class="v" id="pSeed">—</div>
-          <div class="k">Rerolls</div><div class="v" id="pRerolls">0</div>
-        </div>
-
-        <hr/>
-        <div class="row">
-          <a class="btn primary" href="checkout.html">Go to checkout</a>
-          <a class="btn" href="cancel.html">Cancel page</a>
+      <div class="card mapCard">
+        <div class="sectionTitle">Map</div>
+        <div id="map"></div>
+        <div class="mapFoot">
+          Tiles © OpenStreetMap contributors • Map is approximate
         </div>
       </div>
     </div>
 
-    <div class="notice" style="margin-top:14px;">
-      This is a novelty certificate referencing a random location. It grants no ownership, rights, permissions, or guarantees.
+    <div class="footer">
+      <span>© 2026 Random Spot</span>
+      <span class="dot">•</span>
+      <a href="terms.html">Terms</a>
     </div>
   </div>
 
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
   <script src="app.js"></script>
 </body>
 </html>

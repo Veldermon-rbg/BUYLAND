@@ -3,50 +3,44 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Random Spot • Success</title>
+  <title>Checkout • Random Spot</title>
 </head>
-<body data-page="success">
+<body data-page="checkout">
   <div class="wrap">
     <div class="nav">
-      <div class="brand">✅ Success <span class="badge">verified</span></div>
+      <div class="brand">Checkout <span class="badge">Stripe</span></div>
       <div class="navlinks">
         <a href="index.html">Home</a>
         <a href="terms.html">Terms</a>
       </div>
     </div>
 
-    <h1>Payment verification</h1>
-    <p>This page verifies your Stripe session before downloads unlock.</p>
+    <div class="hero">
+      <h1>Review</h1>
+      <p class="sub">Payment happens on Stripe. Download unlocks after server verification.</p>
+    </div>
 
-    <div class="grid">
+    <div class="grid single">
       <div class="card">
-        <h2>Status</h2>
-        <div class="notice" id="status"></div>
+        <div class="sectionTitle">Spot</div>
 
-        <hr/>
-        <h2>Spot</h2>
-        <div class="kv">
-          <div class="k">Country</div><div class="v" id="metaCountry">—</div>
-          <div class="k">Mode</div><div class="v" id="metaMode">—</div>
-          <div class="k">Latitude</div><div class="v" id="metaLat">—</div>
-          <div class="k">Longitude</div><div class="v" id="metaLon">—</div>
-          <div class="k">Seed</div><div class="v" id="metaSeed">—</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Certificate</h2>
-        <canvas id="certPreview" width="1400" height="820"></canvas>
+        <div id="summaryWrap"></div>
 
         <div class="row">
-          <button class="btn good" id="downloadBtn" disabled>Download PNG</button>
-          <a class="btn" href="index.html">Make another</a>
+          <button class="btn primary" id="payBtn">Pay with Stripe</button>
+          <a class="btn" href="index.html">Back</a>
         </div>
 
-        <div class="notice">
-          Novelty certificate only. No ownership, permissions, or access rights.
+        <div class="status" id="status"></div>
+
+        <div class="note">
+          This is a novelty certificate referencing a random location. No ownership or access rights.
         </div>
       </div>
+    </div>
+
+    <div class="footer">
+      <a href="index.html">Home</a><span class="dot">•</span><a href="terms.html">Terms</a>
     </div>
   </div>
 
