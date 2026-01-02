@@ -3,12 +3,20 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Checkout • Random Spot</title>
+  <title>Success • Random Spot Certificate</title>
+
+  <!-- Leaflet (map) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
 </head>
-<body data-page="checkout">
+<body data-page="success">
   <div class="wrap">
     <div class="nav">
-      <div class="brand">Checkout <span class="badge">Stripe</span></div>
+      <div class="brand"><span id="brandText">Random Spot Certificate</span> <span class="badge">verified</span></div>
       <div class="navlinks">
         <a href="index.html">Home</a>
         <a href="terms.html">Terms</a>
@@ -16,26 +24,42 @@
     </div>
 
     <div class="hero">
-      <h1>Review</h1>
-      <p class="sub">Payment happens on Stripe. Download unlocks after server verification.</p>
+      <h1>Verification</h1>
+      <p class="sub">We verify your Stripe session before enabling downloads.</p>
     </div>
 
-    <div class="grid single">
+    <div class="grid">
       <div class="card">
-        <div class="sectionTitle">Spot</div>
-
-        <div id="summaryWrap"></div>
-
-        <div class="row">
-          <button class="btn primary" id="payBtn">Pay with Stripe</button>
-          <a class="btn" href="index.html">Back</a>
-        </div>
-
+        <div class="sectionTitle">Status</div>
         <div class="status" id="status"></div>
 
-        <div class="note">
-          This is a novelty certificate referencing a random location. No ownership or access rights.
+        <div class="mini">
+          <div class="kv">
+            <div class="k">Country</div><div class="v" id="metaCountry">—</div>
+            <div class="k">Mode</div><div class="v" id="metaMode">—</div>
+            <div class="k">Center</div><div class="v" id="metaCoords">—</div>
+            <div class="k">Tile</div><div class="v" id="metaTile">—</div>
+            <div class="k">Seed</div><div class="v" id="metaSeed">—</div>
+          </div>
         </div>
+
+        <div class="row">
+          <button class="btn good" id="downloadBtn" disabled>Download certificate (PNG)</button>
+          <a class="btn" href="index.html">Make another</a>
+        </div>
+
+        <div class="note">
+          Novelty certificate only. No ownership, permissions, or guaranteed access.
+        </div>
+      </div>
+
+      <div class="card mapCard">
+        <div class="sectionTitle">Map</div>
+        <div id="mapSuccess"></div>
+        <div class="mapFoot">Tiles © OpenStreetMap contributors</div>
+
+        <div class="sectionTitle" style="margin-top:14px;">Preview</div>
+        <canvas id="certPreview" width="1400" height="820"></canvas>
       </div>
     </div>
 
@@ -44,6 +68,11 @@
     </div>
   </div>
 
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
   <script src="app.js"></script>
 </body>
 </html>

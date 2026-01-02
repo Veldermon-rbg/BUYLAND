@@ -51,12 +51,17 @@ exports.handler = async (event) => {
       const seed = asStr(body.seed, 120) || "";
       const lat = asStr(body.lat, 40) || "";
       const lon = asStr(body.lon, 40) || "";
+      const tile_m = asStr(body.tile_m, 12) || "1";
 
       const latNum = Number(lat);
       const lonNum = Number(lon);
+      const tileNum = Number(tile_m);
 
       if (!Number.isFinite(latNum) || !Number.isFinite(lonNum) || Math.abs(latNum) > 90 || Math.abs(lonNum) > 180) {
         return json(400, { error: "Invalid coordinates" });
+      }
+      if (!Number.isFinite(tileNum) || tileNum <= 0 || tileNum > 1000) {
+        return json(400, { error: "Invalid tile_m" });
       }
 
       const session = await stripe.checkout.sessions.create({
@@ -71,7 +76,8 @@ exports.handler = async (event) => {
           mode,
           seed,
           lat: latNum.toFixed(6),
-          lon: lonNum.toFixed(6)
+          lon: lonNum.toFixed(6),
+          tile_m: String(tileNum)
         }
       });
 

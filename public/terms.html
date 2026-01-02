@@ -3,44 +3,125 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Random Spot • Terms</title>
+  <title>Terms • Random Spot Certificate</title>
 </head>
+
 <body>
   <div class="wrap">
     <div class="nav">
-      <div class="brand">📜 Terms <span class="badge">simple</span></div>
+      <div class="brand">Random Spot Certificate <span class="badge">terms</span></div>
       <div class="navlinks">
         <a href="index.html">Home</a>
-        <a href="checkout.html">Checkout</a>
+        <a href="checkout.html" class="pill">Checkout</a>
       </div>
     </div>
 
-    <h1>Terms (simple)</h1>
+    <div class="hero">
+      <h1>Terms</h1>
+      <p class="sub">
+        These terms explain what you are (and aren’t) buying. Short version: it’s a novelty certificate referencing a randomly generated location tile.
+      </p>
+    </div>
 
-    <div class="card" style="margin-top:16px;">
-      <p><b>1) What you’re buying</b><br/>
-      A novelty certificate referencing a randomly generated geographic location.</p>
+    <div class="grid single">
+      <div class="card">
+        <div class="sectionTitle">1) What you’re buying</div>
+        <p class="p">
+          You are buying a <b>novelty digital certificate</b> that references a randomly generated <b>area tile</b> (for example, 1 m × 1 m) identified by geographic coordinates.
+        </p>
+        <p class="p">
+          <b>You are not buying land</b>. You receive no property rights, ownership, lease, easement, tenancy, or any other legal interest in any real-world land or location.
+        </p>
 
-      <p><b>2) What you’re NOT buying</b><br/>
-      Any land, title, ownership, property rights, access rights, permissions, exclusivity, or guarantees.</p>
+        <div class="sectionTitle">2) Access and permissions</div>
+        <p class="p">
+          The referenced tile may be located on public land, private property, restricted areas, culturally sensitive sites, hazardous terrain, construction zones, closed tracks, or otherwise inaccessible places.
+        </p>
+        <p class="p">
+          <b>We do not grant access.</b> If you choose to visit, you must follow local laws, rules, signage, closures, and obtain permission where required. Do not trespass.
+        </p>
 
-      <p><b>3) Access & rules</b><br/>
-      Locations may be public or private, open or closed, safe or unsafe. Rules vary and can change.
-      Always check local rules and conditions at the time of any visit.</p>
+        <div class="sectionTitle">3) “Publicish” mode is not a guarantee</div>
+        <p class="p">
+          Some tiles are generated using a best-effort “publicish” filter. This tries to avoid obvious ocean/remote picks using public map data.
+          <b>This is not a guarantee</b> that the tile is accessible, legal to visit, safe, open, or even on land.
+        </p>
 
-      <p><b>4) Refunds</b><br/>
-      Add your policy here later.</p>
+        <div class="sectionTitle">4) Randomness + rerolls</div>
+        <p class="p">
+          Tiles are randomly generated. You can reroll before purchase, but you do not get to choose an exact location on a map.
+          Once you pay, the purchase corresponds to the tile stored with that checkout session.
+        </p>
 
-      <p><b>5) Contact</b><br/>
-      Add your contact email here.</p>
+        <div class="sectionTitle">5) Deliverable</div>
+        <p class="p">
+          After payment is verified, you can download your certificate as an image file. The certificate includes the tile’s center coordinates, tile size, and seed identifier.
+        </p>
 
-      <hr/>
-      <div class="notice">
-        Keep this page linked near checkout so nobody can say “I didn’t know”.
+        <div class="sectionTitle">6) Refunds</div>
+        <p class="p">
+          Because this is a digital novelty item delivered immediately after payment verification, refunds are generally not provided.
+          If something is broken (e.g., you paid but cannot download), contact support and we’ll sort it out.
+        </p>
+
+        <div class="sectionTitle">7) Safety</div>
+        <p class="p">
+          Don’t do anything dumb for the bit. If you visit a tile, use common sense and prioritize safety.
+          Avoid dangerous conditions, respect private property, and check weather, track closures, and access rules.
+        </p>
+
+        <div class="sectionTitle">8) Support</div>
+        <p class="p">
+          Support email: <a href="mailto:randomspotcert@gmail.com">randomspotcert@gmail.com</a>
+        </p>
+
+        <div class="divider"></div>
+
+        <p class="small">
+          Last updated: 2026-01-02
+        </p>
       </div>
+    </div>
+
+    <div class="footer">
+      <a href="index.html">Home</a><span class="dot">•</span><a href="checkout.html">Checkout</a>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <style>
+    :root{
+      --bg:#0b0c10;
+      --card:#111318;
+      --line:rgba(255,255,255,.08);
+      --txt:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.65);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    a{color:rgba(255,255,255,.88)}
+    .wrap{max-width:980px;margin:0 auto;padding:22px 16px 48px}
+    .nav{display:flex;align-items:center;justify-content:space-between;
+      padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02);
+      position:sticky;top:12px;backdrop-filter: blur(10px);
+    }
+    .brand{font-weight:900;letter-spacing:.2px;display:flex;gap:10px;align-items:center}
+    .badge{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+    .navlinks{display:flex;gap:10px;align-items:center}
+    .pill{border:1px solid var(--line);padding:8px 10px;border-radius:12px;color:var(--txt);background:rgba(255,255,255,.03);text-decoration:none}
+    .pill:hover{border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.05)}
+    h1{margin:10px 0 6px;font-size:34px;letter-spacing:-.4px}
+    .sub{margin:0;color:var(--muted);line-height:1.5}
+    .hero{margin:14px 0 14px}
+    .grid.single{display:grid;grid-template-columns:1fr;gap:12px}
+    .card{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:14px}
+    .sectionTitle{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.18em;margin:14px 0 8px}
+    .p{margin:0 0 10px;line-height:1.6;color:rgba(255,255,255,.85)}
+    .divider{height:1px;background:var(--line);margin:16px 0}
+    .small{color:var(--muted);font-size:12px;margin:0}
+    .footer{margin-top:18px;display:flex;gap:10px;align-items:center;color:var(--muted);font-size:12px}
+    .dot{opacity:.5}
+  </style>
 </body>
 </html>

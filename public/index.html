@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Random Spot</title>
+  <title>Random Spot Certificate</title>
 
   <!-- Leaflet (map) -->
   <link
@@ -16,7 +16,7 @@
 <body data-page="index">
   <div class="wrap">
     <div class="nav">
-      <div class="brand">Random Spot <span class="badge">certificate</span></div>
+      <div class="brand"><span id="brandText">Random Spot Certificate</span> <span class="badge">generator</span></div>
       <div class="navlinks">
         <a href="terms.html">Terms</a>
         <a href="checkout.html" class="pill">Checkout</a>
@@ -24,8 +24,8 @@
     </div>
 
     <div class="hero">
-      <h1>Roll a location.</h1>
-      <p class="sub">Novelty certificate. No ownership, no permissions, no guarantees of access.</p>
+      <h1>Roll a tile.</h1>
+      <p class="sub">You get a novelty certificate for a randomly generated <b>area tile</b>. No ownership, no permissions, no guaranteed access.</p>
     </div>
 
     <div class="grid">
@@ -46,10 +46,23 @@
         <div class="field">
           <label>Mode</label>
           <select id="mode">
-            <option value="publicish">Prefer likely-accessible areas (still check rules)</option>
+            <option value="publicish">Prefer likely-land + near-roads (still check rules)</option>
             <option value="anywhere">Anywhere (may be private/restricted)</option>
           </select>
-          <div class="hint">We never promise access. “Publicish” just avoids obvious water / extreme picks.</div>
+          <div class="hint">We never promise access. “Publicish” just avoids obvious water + totally remote picks.</div>
+        </div>
+
+        <div class="field">
+          <label>Tile size</label>
+          <select id="tileSize">
+            <option value="1" selected>1 m × 1 m</option>
+            <option value="2">2 m × 2 m</option>
+            <option value="5">5 m × 5 m</option>
+            <option value="10">10 m × 10 m</option>
+            <option value="25">25 m × 25 m</option>
+            <option value="50">50 m × 50 m</option>
+          </select>
+          <div class="hint">We show a square tile + corners + rectangle on the map.</div>
         </div>
 
         <div class="row">
@@ -61,9 +74,11 @@
 
         <div class="mini">
           <div class="kv">
-            <div class="k">Coords</div><div class="v" id="pCoords">—</div>
+            <div class="k">Center</div><div class="v" id="pCoords">—</div>
+            <div class="k">Tile</div><div class="v" id="pArea">—</div>
+            <div class="k">Corners</div><div class="v" id="pCorners">—</div>
             <div class="k">Seed</div><div class="v" id="pSeed">—</div>
-            <div class="k">Check</div><div class="v" id="pCheck">—</div>
+            <div class="k">Checks</div><div class="v" id="pCheck">—</div>
             <div class="k">Nearby</div><div class="v" id="pPlace">—</div>
           </div>
         </div>
@@ -83,7 +98,7 @@
     </div>
 
     <div class="footer">
-      <span>© 2026 Random Spot</span>
+      <span>© 2026 Random Spot Certificate</span>
       <span class="dot">•</span>
       <a href="terms.html">Terms</a>
     </div>
