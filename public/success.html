@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Random Spot • Success</title>
+</head>
+<body data-page="success">
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand">✅ Success <span class="badge">verified</span></div>
+      <div class="navlinks">
+        <a href="index.html">Home</a>
+        <a href="terms.html">Terms</a>
+      </div>
+    </div>
+
+    <h1>Payment verification</h1>
+    <p>This page verifies your Stripe session before downloads unlock.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Status</h2>
+        <div class="notice" id="status"></div>
+
+        <hr/>
+        <h2>Spot</h2>
+        <div class="kv">
+          <div class="k">Country</div><div class="v" id="metaCountry">—</div>
+          <div class="k">Mode</div><div class="v" id="metaMode">—</div>
+          <div class="k">Latitude</div><div class="v" id="metaLat">—</div>
+          <div class="k">Longitude</div><div class="v" id="metaLon">—</div>
+          <div class="k">Seed</div><div class="v" id="metaSeed">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Certificate</h2>
+        <canvas id="certPreview" width="1400" height="820"></canvas>
+
+        <div class="row">
+          <button class="btn good" id="downloadBtn" disabled>Download PNG</button>
+          <a class="btn" href="index.html">Make another</a>
+        </div>
+
+        <div class="notice">
+          Novelty certificate only. No ownership, permissions, or access rights.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

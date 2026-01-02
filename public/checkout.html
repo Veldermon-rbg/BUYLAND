@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Random Spot • Checkout</title>
+</head>
+<body data-page="checkout">
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand">🧾 Checkout <span class="badge">Stripe</span></div>
+      <div class="navlinks">
+        <a href="index.html">Home</a>
+        <a href="terms.html">Terms</a>
+      </div>
+    </div>
+
+    <h1>Review your spot</h1>
+    <p>Pay via Stripe Checkout. Download unlocks only after server verification.</p>
+
+    <div class="grid">
+      <div class="card" id="summaryWrap">
+        <h2>Spot details</h2>
+        <div class="kv">
+          <div class="k">Country</div><div class="v" id="sumCountry">—</div>
+          <div class="k">Mode</div><div class="v" id="sumMode">—</div>
+          <div class="k">Latitude</div><div class="v" id="sumLat">—</div>
+          <div class="k">Longitude</div><div class="v" id="sumLon">—</div>
+          <div class="k">Seed</div><div class="v" id="sumSeed">—</div>
+        </div>
+
+        <div class="notice">
+          <b>Access note:</b> Locations may be private, restricted, closed, or unsafe. Always check local rules.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Pay</h2>
+        <div class="row">
+          <button class="btn primary" id="payBtn">Pay with Stripe</button>
+          <a class="btn" href="index.html">Back</a>
+        </div>
+        <div class="notice" id="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
