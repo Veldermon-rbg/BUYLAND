@@ -1,0 +1,267 @@
+// One JS file for all pages.
+// Stores the chosen spot in localStorage and runs Stripe create/verify via /api/stripe
+
+(function(){
+  const KEY = "rsc_spot_v1";
+
+  const COUNTRY_BOUNDS = {
+    NZ: { latMin:-47.5, latMax:-34.0, lonMin:166.0, lonMax:179.8 },
+    AU: { latMin:-43.8, latMax:-10.0, lonMin:112.0, lonMax:154.0 },
+    US: { latMin: 24.5, latMax: 49.5, lonMin:-125.0, lonMax:-66.5 },
+    GB: { latMin: 49.8, latMax: 59.0, lonMin:  -8.6, lonMax:  1.8 },
+    JP: { latMin: 30.0, latMax: 45.8, lonMin: 129.0, lonMax:145.8 }
+  };
+
+  function qs(sel){ return document.querySelector(sel); }
+
+  function saveSpot(spot){
+    localStorage.setItem(KEY, JSON.stringify(spot));
+  }
+  function loadSpot(){
+    try{
+      const v = localStorage.getItem(KEY);
+      return v ? JSON.parse(v) : null;
+    }catch{ return null; }
+  }
+
+  function seedStr(){
+    const bytes = new Uint8Array(10);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes).map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+
+  function mulberry32(seed){
+    let t = seed >>> 0;
+    return function(){
+      t += 0x6D2B79F5;
+      let x = Math.imul(t ^ (t >>> 15), 1 | t);
+      x ^= x + Math.imul(x ^ (x >>> 7), 61 | x);
+      return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function hash32(str){
+    let h = 2166136261 >>> 0;
+    for (let i=0;i<str.length;i++){
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function fmt6(n){ return Number(n).toFixed(6); }
+
+  function generateSpot(country, mode){
+    const b = COUNTRY_BOUNDS[country] || COUNTRY_BOUNDS.NZ;
+    const seed = `${country}-${mode}-${seedStr()}`;
+    const rng = mulberry32(hash32(seed));
+
+    // “publicish” tries a bit harder to avoid ocean-y picks (still not guaranteed).
+    const maxTries = mode === "publicish" ? 120 : 40;
+
+    let lat = 0, lon = 0;
+    for (let i=0;i<maxTries;i++){
+      lat = b.latMin + rng() * (b.latMax - b.latMin);
+      lon = b.lonMin + rng() * (b.lonMax - b.lonMin);
+
+      const oceanish = Math.abs(lat) / 90; // crude
+      if (mode !== "publicish") break;
+      if (rng() > oceanish * 0.9) break;
+    }
+
+    return { country, mode, lat, lon, seed };
+  }
+
+  async function postJSON(url, payload){
+    const r = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json().catch(()=> ({}));
+    if (!r.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  async function getJSON(url){
+    const r = await fetch(url);
+    const data = await r.json().catch(()=> ({}));
+    if (!r.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  function setText(id, txt){
+    const el = qs(id);
+    if (el) el.textContent = txt;
+  }
+
+  function dlText(filename, text){
+    const blob = new Blob([text], { type:"text/plain;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=> URL.revokeObjectURL(a.href), 5000);
+  }
+
+  function buildCertificate(meta){
+    const lines = [
+      "RANDOM LOCATION CERTIFICATE",
+      "",
+      `Country: ${meta.country || "?"}`,
+      `Mode: ${meta.mode || "?"}`,
+      `Latitude: ${meta.lat || "?"}`,
+      `Longitude: ${meta.lon || "?"}`,
+      `Seed: ${meta.seed || "?"}`,
+      "",
+      "This is a novelty location reference.",
+      "No ownership, permissions, access rights, or guarantees are included.",
+      "Public access and rules vary by location and can change over time.",
+      "",
+      `Issued (UTC): ${new Date().toISOString()}`
+    ];
+    return lines.join("\n");
+  }
+
+  // -------------------------
+  // Page: index.html
+  // -------------------------
+  function pageIndex(){
+    const countryEl = qs("#country");
+    const modeEl = qs("#mode");
+    const statusEl = qs("#status");
+
+    let spot = generateSpot(countryEl.value, modeEl.value);
+
+    function render(){
+      setText("#lat", fmt6(spot.lat));
+      setText("#lon", fmt6(spot.lon));
+      setText("#seed", spot.seed);
+    }
+
+    function reroll(){
+      spot = generateSpot(countryEl.value, modeEl.value);
+      render();
+      if (statusEl) statusEl.textContent = "Rolled ✅";
+    }
+
+    function lock(){
+      saveSpot(spot);
+      if (statusEl) statusEl.textContent = "Saved ✅";
+    }
+
+    qs("#reroll")?.addEventListener("click", reroll);
+    qs("#lock")?.addEventListener("click", lock);
+    countryEl?.addEventListener("change", reroll);
+    modeEl?.addEventListener("change", reroll);
+
+    render();
+    if (statusEl) statusEl.textContent = "Ready";
+  }
+
+  // -------------------------
+  // Page: checkout.html
+  // -------------------------
+  function pageCheckout(){
+    const sum = qs("#summary");
+    const status = qs("#status");
+    const payBtn = qs("#payBtn");
+
+    const spot = loadSpot();
+    if (!spot){
+      if (sum) sum.textContent = "No spot saved. Go back to Home and lock one in.";
+      if (status) status.textContent = "Missing spot";
+      if (payBtn) payBtn.disabled = true;
+      return;
+    }
+
+    if (sum){
+      sum.textContent =
+        `Country: ${spot.country}\n` +
+        `Mode: ${spot.mode}\n` +
+        `Latitude: ${fmt6(Number(spot.lat))}\n` +
+        `Longitude: ${fmt6(Number(spot.lon))}\n` +
+        `Seed: ${spot.seed}\n`;
+    }
+    if (status) status.textContent = "Ready to pay";
+
+    payBtn?.addEventListener("click", async () => {
+      try{
+        payBtn.disabled = true;
+        status.textContent = "Creating secure checkout…";
+
+        const data = await postJSON("/api/stripe?action=create", {
+          country: spot.country,
+          mode: spot.mode,
+          seed: spot.seed,
+          lat: String(spot.lat),
+          lon: String(spot.lon)
+        });
+
+        if (!data.url) throw new Error("No checkout URL returned");
+        status.textContent = "Redirecting to Stripe…";
+        location.href = data.url;
+
+      }catch(e){
+        status.textContent = "Error: " + (e.message || e);
+        payBtn.disabled = false;
+      }
+    });
+  }
+
+  // -------------------------
+  // Page: success.html
+  // -------------------------
+  function pageSuccess(){
+    const status = qs("#status");
+    const metaEl = qs("#meta");
+    const dlBtn = qs("#dlBtn");
+
+    const u = new URL(location.href);
+    const session_id = u.searchParams.get("session_id") || "";
+
+    if (!session_id){
+      status.textContent = "Missing session_id. This page only works via Stripe redirect.";
+      return;
+    }
+
+    (async () => {
+      try{
+        status.textContent = "Verifying payment…";
+        const data = await getJSON(`/api/stripe?action=verify&session_id=${encodeURIComponent(session_id)}`);
+
+        if (!data.paid){
+          status.textContent = `Not confirmed (yet). payment_status=${data.payment_status || "unknown"}. Refresh in a bit.`;
+          return;
+        }
+
+        status.textContent = "Verified ✅ Download unlocked";
+        const meta = data.metadata || {};
+
+        if (metaEl){
+          metaEl.textContent = JSON.stringify(meta, null, 2);
+        }
+
+        dlBtn.disabled = false;
+        dlBtn.style.opacity = "1";
+        dlBtn.addEventListener("click", () => {
+          const cert = buildCertificate(meta);
+          const fn = `certificate-${(meta.country||"XX")}-${(meta.seed||"seed").slice(0,12)}.txt`;
+          dlText(fn, cert);
+        });
+
+      }catch(e){
+        status.textContent = "Error: " + (e.message || e);
+      }
+    })();
+  }
+
+  // expose
+  window.RSC = {
+    pageIndex,
+    pageCheckout,
+    pageSuccess
+  };
+})();
