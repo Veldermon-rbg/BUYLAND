@@ -688,9 +688,134 @@ async function pageSuccess(){
 }
 
 // --- Boot ------------------------------------------------------------------
+function mountSubscribeFooter() {
+  // Don't double-inject
+  if (document.querySelector("[data-subscribe-footer='1']")) return;
+
+  const footer = document.createElement("div");
+  footer.setAttribute("data-subscribe-footer", "1");
+  footer.innerHTML = `
+    <div class="subWrap">
+      <div class="subInner">
+        <div class="subLeft">
+          <div class="subTitle">Get occasional drops</div>
+          <div class="subDesc">Random updates. Low effort. Unsubscribe anytime.</div>
+        </div>
+
+        <form class="subForm" id="subscribeForm">
+          <input id="subscribeEmail" type="email" placeholder="email@example.com" autocomplete="email" required />
+          <input id="subscribeTrap" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <button class="btn good" type="submit" id="subscribeBtn">Subscribe</button>
+        </form>
+      </div>
+
+      <div class="subMsg" id="subscribeMsg"></div>
+    </div>
+  `;
+
+  document.body.appendChild(footer);
+
+  // Styles (minimal + matches your theme)
+  const style = document.createElement("style");
+  style.textContent = `
+    .subWrap{
+      position:sticky;
+      bottom:0;
+      z-index:50;
+      padding:12px 16px;
+      border-top:1px solid var(--line);
+      background:rgba(11,12,16,.85);
+      backdrop-filter: blur(10px);
+    }
+    .subInner{
+      max-width:980px;
+      margin:0 auto;
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .subLeft{display:flex;flex-direction:column;gap:2px}
+    .subTitle{font-weight:900;letter-spacing:.2px}
+    .subDesc{color:var(--muted);font-size:12px}
+    .subForm{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .subForm input[type="email"]{min-width:240px}
+    #subscribeTrap{
+      position:absolute;
+      left:-9999px;
+      width:1px;height:1px;opacity:0;
+    }
+    .subMsg{
+      max-width:980px;
+      margin:8px auto 0;
+      color:var(--muted);
+      font-size:12px;
+      display:none;
+      white-space:pre-wrap;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Client-side cooldown to reduce spam
+  const COOLDOWN_MS = 60_000;
+
+  const form = document.getElementById("subscribeForm");
+  const emailEl = document.getElementById("subscribeEmail");
+  const trapEl = document.getElementById("subscribeTrap");
+  const btn = document.getElementById("subscribeBtn");
+  const msg = document.getElementById("subscribeMsg");
+
+  function showMsg(t, kind="") {
+    msg.style.display = t ? "block" : "none";
+    msg.textContent = t || "";
+    msg.dataset.kind = kind;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const last = Number(localStorage.getItem("sub_last_ts") || "0");
+    if (Date.now() - last < COOLDOWN_MS) {
+      showMsg("You just tried that — wait a bit 😭", "bad");
+      return;
+    }
+
+    const email = (emailEl.value || "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showMsg("That email doesn’t look valid.", "bad");
+      return;
+    }
+
+    // Honeypot: bots fill this
+    if ((trapEl.value || "").trim()) {
+      showMsg("Nope.", "bad");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Subscribing…";
+    showMsg("");
+
+    try {
+      const out = await postJSON("/api/stripe?action=subscribe", { email });
+      localStorage.setItem("sub_last_ts", String(Date.now()));
+      showMsg(out.message || "Subscribed ✅ Check your inbox.", "good");
+      btn.textContent = "Subscribe";
+      btn.disabled = false;
+      emailEl.value = "";
+    } catch (err) {
+      showMsg(`Subscribe error: ${err.message}`, "bad");
+      btn.textContent = "Subscribe";
+      btn.disabled = false;
+    }
+  });
+}
 
 (function boot(){
   injectCSS();
+  mountSubscribeFooter();
+
   const page = document.body.getAttribute("data-page") || "";
   if (page === "index") pageIndex();
   else if (page === "checkout") pageCheckout();
